@@ -1,0 +1,51 @@
+age,income_level,num_luxury_items,wtp_restoration,wtp_authentication,sustainability_score,adoption_intent,gender,brand_preference
+48,4,5,1772,329,4,Very likely,Female,Dior
+34,2,7,2568,252,1,Neutral,Male,Gucci
+27,2,9,2082,371,4,Likely,Male,LV
+40,2,7,2182,417,3,Very unlikely,Female,LV
+38,4,9,1509,359,1,Very likely,Male,Hermès
+42,2,8,2279,397,4,Very likely,Male,LV
+30,3,2,2234,446,4,Very unlikely,Female,Hermès
+30,4,1,1448,402,3,Very likely,Male,Sneaker-Lux
+43,3,7,1117,383,1,Neutral,Female,Chanel
+43,4,7,2500,322,3,Likely,Male,Gucci
+22,2,8,2048,454,1,Very unlikely,Female,Hermès
+41,3,5,2642,493,5,Likely,Female,Chanel
+21,4,3,2057,479,2,Very likely,Female,LV
+43,1,8,1483,297,2,Very likely,Female,LV
+49,2,6,1463,397,2,Very unlikely,Male,Chanel
+21,4,3,2798,439,3,Neutral,Female,LV
+40,1,1,2650,343,5,Unlikely,Female,Sneaker-Lux
+52,4,3,2197,296,1,Very unlikely,Female,Sneaker-Lux
+31,1,5,2495,400,4,Unlikely,Male,Chanel
+41,2,3,2431,323,1,Unlikely,Female,Hermès
+44,3,1,2295,386,4,Neutral,Male,Hermès
+46,1,5,2056,458,1,Unlikely,Female,Chanel
+47,4,7,2515,347,5,Unlikely,Male,Hermès
+35,2,7,1936,451,4,Neutral,Male,Hermès
+34,1,9,2653,346,3,Unlikely,Female,Sneaker-Lux
+22,4,3,2320,347,1,Unlikely,Male,Hermès
+26,4,7,1241,398,1,Unlikely,Female,Dior
+40,4,1,1363,327,4,Very unlikely,Female,Gucci
+28,1,4,2091,238,3,Very unlikely,Female,LV
+37,1,4,2333,328,3,Very unlikely,Male,Dior
+23,1,5,2630,466,5,Neutral,Male,Hermès
+44,3,7,2209,350,3,Very likely,Female,Sneaker-Lux
+33,1,7,2210,497,3,Unlikely,Female,Chanel
+28,1,4,1936,298,3,Unlikely,Male,Hermès
+45,1,7,2436,462,2,Neutral,Female,Sneaker-Lux
+21,3,3,2448,451,5,Unlikely,Female,Gucci
+39,1,6,1751,343,1,Very unlikely,Female,Hermès
+47,4,2,1904,311,4,Very likely,Male,Chanel
+26,1,9,1498,259,1,Likely,Male,Sneaker-Lux
+27,4,5,912,201,5,Unlikely,Male,Sneaker-Lux
+54,4,6,801,453,4,Very unlikely,Female,Sneaker-Lux
+33,4,4,1441,339,5,Likely,Female,Gucci
+36,3,7,1019,236,3,Very likely,Female,Hermès
+23,3,9,2389,359,4,Likely,Male,Gucci
+21,3,7,1654,208,3,Very unlikely,Female,LV
+25,1,1,2559,432,1,Likely,Female,LV
+23,4,1,2048,298,1,Neutral,Female,Hermès
+48,3,9,1184,346,4,Likely,Female,Gucci
+37,3,9,2226,407,4,Unlikely,Male,Chanel
+45,1,4,2461,330,5,Unlikely,Male,Sneaker-Lux
