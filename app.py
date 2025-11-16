@@ -2,12 +2,19 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np
+
+# Conditional import to avoid errors if seaborn is not installed
+try:
+    import seaborn as sns
+    seaborn_available = True
+except ImportError:
+    seaborn_available = False
+
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-import numpy as np
 
 # ----------------------- THEME SETUP -----------------------
 st.set_page_config(
@@ -59,7 +66,7 @@ df = load_data()
 
 # ------------------ PLOTS ------------------
 def pastel_palette():
-    return sns.color_palette("pastel")
+    return sns.color_palette("pastel") if seaborn_available else None
 
 def show_overview():
     st.header("Overview & Filters")
@@ -68,23 +75,27 @@ def show_overview():
     st.dataframe(df.head())
 
     numeric_column = st.selectbox("Choose a numeric column to visualize", df.select_dtypes(include=np.number).columns)
-    fig, ax = plt.subplots()
-    sns.histplot(df[numeric_column], kde=True, ax=ax, color=pastel_palette()[0])
-    ax.set_title(f"Distribution of {numeric_column}")
-    st.pyplot(fig)
 
-    st.subheader("Adoption Intent by Gender")
-    fig2, ax2 = plt.subplots()
-    sns.countplot(data=df, x="adoption_intent", hue="gender", palette=pastel_palette(), ax=ax2)
-    ax2.set_title("Adoption Intent by Gender")
-    st.pyplot(fig2)
+    if seaborn_available:
+        fig, ax = plt.subplots()
+        sns.histplot(df[numeric_column], kde=True, ax=ax, color=pastel_palette()[0])
+        ax.set_title(f"Distribution of {numeric_column}")
+        st.pyplot(fig)
 
-    st.subheader("Brand Preference Distribution")
-    brand_counts = df['brand_preference'].value_counts()
-    fig3, ax3 = plt.subplots()
-    ax3.pie(brand_counts, labels=brand_counts.index, autopct='%1.1f%%', colors=pastel_palette(), startangle=90)
-    ax3.axis('equal')
-    st.pyplot(fig3)
+        st.subheader("Adoption Intent by Gender")
+        fig2, ax2 = plt.subplots()
+        sns.countplot(data=df, x="adoption_intent", hue="gender", palette=pastel_palette(), ax=ax2)
+        ax2.set_title("Adoption Intent by Gender")
+        st.pyplot(fig2)
+
+        st.subheader("Brand Preference Distribution")
+        brand_counts = df['brand_preference'].value_counts()
+        fig3, ax3 = plt.subplots()
+        ax3.pie(brand_counts, labels=brand_counts.index, autopct='%1.1f%%', colors=pastel_palette(), startangle=90)
+        ax3.axis('equal')
+        st.pyplot(fig3)
+    else:
+        st.warning("Seaborn is not available. Please install it via requirements.txt for full visuals.")
 
 
 def show_clustering():
@@ -101,10 +112,13 @@ def show_clustering():
     kmeans = KMeans(n_clusters=3, random_state=42).fit(X)
     df['cluster'] = kmeans.labels_
 
-    fig, ax = plt.subplots()
-    sns.scatterplot(data=df, x="wtp_restoration", y="wtp_authentication", hue="cluster", palette=pastel_palette(), ax=ax)
-    ax.set_title("Customer Segments")
-    st.pyplot(fig)
+    if seaborn_available:
+        fig, ax = plt.subplots()
+        sns.scatterplot(data=df, x="wtp_restoration", y="wtp_authentication", hue="cluster", palette=pastel_palette(), ax=ax)
+        ax.set_title("Customer Segments")
+        st.pyplot(fig)
+    else:
+        st.warning("Seaborn is required for cluster visualization.")
 
 
 def show_classification():
@@ -130,7 +144,7 @@ def show_classification():
 
     cm = confusion_matrix(y_test, y_pred)
     fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Oranges", ax=ax)
+    ax.imshow(cm, cmap="Oranges")
     ax.set_title("Confusion Matrix")
     st.pyplot(fig)
 
@@ -154,13 +168,13 @@ def show_regression():
     y_pred = reg.predict(X_test)
 
     fig, ax = plt.subplots()
-    ax.scatter(y_test, y_pred, color=pastel_palette()[1])
+    ax.scatter(y_test, y_pred, color='tan')
     ax.set_xlabel("Actual")
     ax.set_ylabel("Predicted")
     ax.set_title("Actual vs. Predicted (Restoration WTP)")
     st.pyplot(fig)
 
-    st.markdown(f"**RMSE**: {mean_squared_error(y_test, y_pred, squared=True) ** 0.5:.2f}")
+    st.markdown(f"**RMSE**: {mean_squared_error(y_test, y_pred, squared=False):.2f}")
     st.markdown(f"**R² Score**: {r2_score(y_test, y_pred):.2f}")
 
 # ----------------- MAIN TABS -----------------
