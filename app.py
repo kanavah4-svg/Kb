@@ -11,14 +11,109 @@ from sklearn.metrics import accuracy_score, classification_report, mean_squared_
 import matplotlib.pyplot as plt
 
 
-def main():
-    st.set_page_config(page_title="ATELIER 8 – Data Analytics Dashboard", layout="wide")
+def add_custom_style():
+    # Luxury / clean UI styling
+    st.markdown(
+        """
+        <style>
+        /* Page background + width */
+        .block-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            max-width: 1200px;
+        }
 
-    st.title("ATELIER 8 – Circular Luxury Analytics Dashboard")
-    st.write(
-        "This dashboard explores survey data for ATELIER 8 – a circular luxury restoration "
-        "and authentication studio for designer handbags, sneakers, and leather goods."
+        body {
+            background-color: #f5f4f1;
+        }
+
+        /* Title */
+        h1 {
+            font-size: 2.8rem !important;
+            letter-spacing: 0.08em !important;
+            text-transform: uppercase;
+            color: #111827 !important;
+        }
+
+        h2, h3 {
+            color: #111827 !important;
+        }
+
+        /* Tabs as pills */
+        .stTabs [role="tablist"] {
+            gap: 0.6rem;
+        }
+
+        .stTabs [role="tab"] {
+            padding: 0.45rem 1.3rem;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .stTabs [role="tab"][aria-selected="true"] {
+            background-color: #111827;
+            color: #f9fafb;
+            border-color: #111827;
+        }
+
+        /* DataFrames in soft cards */
+        .stDataFrame, .stTable {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Expander header bold + subtle */
+        .streamlit-expanderHeader {
+            font-weight: 600 !important;
+        }
+
+        /* Sidebar tweaks */
+        section[data-testid="stSidebar"] {
+            background-color: #111827;
+        }
+        section[data-testid="stSidebar"] * {
+            color: #f9fafb !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
     )
+
+
+def main():
+    st.set_page_config(page_title="ATELIER 8 – Circular Luxury Analytics Dashboard", layout="wide")
+    add_custom_style()
+
+    # ------------------------------------------------------------
+    # HERO HEADER
+    # ------------------------------------------------------------
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.title("ATELIER 8 – Circular Luxury Analytics Dashboard")
+    with col2:
+        st.markdown(
+            """
+            <div style="
+                background-color:#111827;
+                color:#f9fafb;
+                padding:0.5rem 0.9rem;
+                border-radius:999px;
+                text-align:center;
+                font-size:0.8rem;
+                margin-top:0.6rem;
+            ">
+                Data Lab · Dubai · Sneaker & Bag Care
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # (Removed the long explanatory paragraph here – you said you don't want it)
 
     # ------------------------------------------------------------
     # DATA INPUT
@@ -37,8 +132,9 @@ def main():
             st.error("sample_data.csv not found. Please upload a CSV file to continue.")
             st.stop()
 
-    st.subheader("Raw Data Preview")
-    st.dataframe(df.head())
+    # Quick peek – but tucked inside an expander so it’s not cluttering the top
+    with st.expander("Raw Data Preview (first 5 rows)", expanded=False):
+        st.dataframe(df.head())
 
     # ------------------------------------------------------------
     # COLUMN TYPES
@@ -53,12 +149,14 @@ def main():
     # ------------------------------------------------------------
     # TABS
     # ------------------------------------------------------------
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "Overview & Filters",
-        "Customer Segments (Clustering)",
-        "Adoption Prediction (Classification)",
-        "Pricing Insight (Regression)",
-    ])
+    tab1, tab2, tab3, tab4 = st.tabs(
+        [
+            "Overview & Filters",
+            "Customer Segments (Clustering)",
+            "Adoption Prediction (Classification)",
+            "Pricing Insight (Regression)",
+        ]
+    )
 
     # ------------------------------------------------------------
     # TAB 1 – OVERVIEW
@@ -69,14 +167,13 @@ def main():
             st.sidebar.header("2. Basic Filters")
             filtered_df = df.copy()
 
-            # up to 3 categorical filters
             for col in categorical_cols[:3]:
                 values = ["All"] + sorted(filtered_df[col].dropna().unique().tolist())
                 choice = st.sidebar.selectbox(f"Filter by {col}", values, key=f"filter_{col}")
                 if choice != "All":
                     filtered_df = filtered_df[filtered_df[col] == choice]
 
-            st.write("### Filtered Data")
+            st.subheader("Filtered Data")
             st.dataframe(filtered_df.head())
 
             if numeric_cols:
@@ -97,11 +194,6 @@ def main():
     # ------------------------------------------------------------
     with tab2:
         st.header("Customer Segments via Clustering")
-        st.write(
-            "This section uses K-Means clustering to uncover hidden customer segments, "
-            "such as investment collectors, rotation enthusiasts, conscious curators, "
-            "or hype sneaker owners."
-        )
 
         if len(numeric_cols) < 2:
             st.warning("Need at least 2 numeric columns for clustering.")
@@ -109,7 +201,7 @@ def main():
             cluster_features = st.multiselect(
                 "Choose numeric features for clustering",
                 numeric_cols,
-                default=numeric_cols[:3]
+                default=numeric_cols[:3],
             )
 
             if len(cluster_features) >= 2:
@@ -146,7 +238,7 @@ def main():
         if categorical_cols:
             target_col = st.selectbox(
                 "Choose the target column (e.g., 'adoption_intent')",
-                categorical_cols
+                categorical_cols,
             )
 
             y_raw = df[target_col].astype(str)
@@ -158,7 +250,7 @@ def main():
                 feature_cols = st.multiselect(
                     "Choose numeric features for the model",
                     numeric_cols,
-                    default=numeric_cols[:3]   # ✅ CORRECT: default=..., not default[...]
+                    default=numeric_cols[:3],
                 )
 
                 if feature_cols:
@@ -188,7 +280,7 @@ def main():
                             f"Enter value for {col}",
                             min_value=col_min,
                             max_value=col_max,
-                            value=col_med
+                            value=col_med,
                         )
                         input_data.append(val)
 
@@ -207,20 +299,16 @@ def main():
     # ------------------------------------------------------------
     with tab4:
         st.header("Pricing Insight – Regression (Willingness to Pay)")
-        st.write(
-            "Use regression to understand how income, number of items, sustainability scores, "
-            "or rarity influence willingness to pay for restoration or authentication."
-        )
 
         if len(numeric_cols) >= 2:
             target_reg = st.selectbox(
                 "Choose numeric target column (e.g., 'wtp_restoration')",
-                numeric_cols
+                numeric_cols,
             )
             feature_reg = st.multiselect(
                 "Choose numeric features to explain the target",
                 [c for c in numeric_cols if c != target_reg],
-                default=[c for c in numeric_cols if c != target_reg][:3]
+                default=[c for c in numeric_cols if c != target_reg][:3],
             )
 
             if feature_reg:
@@ -237,7 +325,6 @@ def main():
 
                 yr_pred = reg.predict(Xr_test)
 
-                # ✅ FIXED: no squared= kwarg, compute RMSE manually
                 mse = mean_squared_error(yr_test, yr_pred)
                 rmse = float(mse ** 0.5)
                 r2 = r2_score(yr_test, yr_pred)
@@ -245,10 +332,12 @@ def main():
                 st.write(f"**RMSE:** {rmse:.2f}")
                 st.write(f"**R² score:** {r2:.3f}")
 
-                coef_df = pd.DataFrame({
-                    "feature": feature_reg,
-                    "coefficient": reg.coef_
-                })
+                coef_df = pd.DataFrame(
+                    {
+                        "feature": feature_reg,
+                        "coefficient": reg.coef_,
+                    }
+                )
                 st.write("### Coefficients (Impact on Willingness to Pay)")
                 st.dataframe(coef_df)
 
