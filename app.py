@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -155,7 +154,7 @@ with tab3:
             feature_cols = st.multiselect(
                 "Choose numeric features for the model",
                 numeric_cols,
-                default=numeric_cols[:3]
+                default[numeric_cols[:3]]
             )
             if feature_cols:
                 X = df[feature_cols].fillna(df[feature_cols].median())
@@ -178,9 +177,9 @@ with tab3:
                 input_data = []
                 for col in feature_cols:
                     val = st.number_input(
-                        f"Enter value for {col}", 
-                        float(X[col].min()), 
-                        float(X[col].max()), 
+                        f"Enter value for {col}",
+                        float(X[col].min()),
+                        float(X[col].max()),
                         float(X[col].median())
                     )
                     input_data.append(val)
@@ -229,7 +228,11 @@ with tab4:
             reg.fit(Xr_train, yr_train)
 
             yr_pred = reg.predict(Xr_test)
-            rmse = mean_squared_error(yr_test, yr_pred, squared=False)
+
+            # ---- FIXED: compute RMSE manually instead of using squared=False ----
+            mse = mean_squared_error(yr_test, yr_pred)
+            rmse = mse ** 0.5
+            # ---------------------------------------------------------------------
             r2 = r2_score(yr_test, yr_pred)
 
             st.write(f"**RMSE:** {rmse:.2f}")
@@ -252,3 +255,4 @@ with tab4:
             st.info("Please select at least one feature for regression.")
     else:
         st.info("Need at least 2 numeric columns for regression.")
+
